@@ -4,6 +4,12 @@ import { countries } from '@/src/lib/countries';
 import type { Country } from '@/src/lib/types';
 import { Loader } from 'lucide-react';
 import ApiKeyInput from './ApiKeyInput';
+import CyberpunkContainer from './layouts/CyberpunkContainer';
+import HolographicPanel from './cyberpunk/HolographicPanel';
+import HolographicText from './cyberpunk/HolographicText';
+import CyberpunkInput from './cyberpunk/CyberpunkInput';
+import NeonButton from './cyberpunk/NeonButton';
+import CyberpunkModal from './cyberpunk/CyberpunkModal';
 
 interface LoginScreenProps {
   onLogin: (phone: string, pin: string) => Promise<{ success: boolean; message: string }>;
@@ -114,56 +120,95 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onSignup }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-[#0a0a1a] to-[#1a1a2e] p-4 text-white font-mono login-container">
-      <ApiKeyInput />
-      <div className="w-full max-w-md bg-black/30 backdrop-blur-md border border-[var(--border-color)] p-8 rounded-lg shadow-2xl">
-        <div className="flex flex-col items-center mb-8">
-          <Logo persona="Agent Zero" />
-          <h1 className="header-title text-3xl mt-4">Webzero</h1>
-          <p className="text-sm text-gray-400 mt-1">Your Personal AI Companion</p>
-        </div>
+    <CyberpunkContainer aiMode="chat">
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-white font-mono">
+        <ApiKeyInput />
+        
+        <div className="w-full max-w-md animate-scale-in">
+          <HolographicPanel glowColor="cyan" withCorners withScanlines withGrid>
+            <div className="p-8">
+              <div className="flex flex-col items-center mb-8">
+                <Logo persona="Agent Zero" />
+                <HolographicText className="text-3xl mt-4 font-bold cyber-heading" glowColor="cyan" flickerEffect>
+                  Webzero
+                </HolographicText>
+                <p className="text-sm text-gray-400 mt-2 cyber-body">Your Personal AI Companion</p>
+              </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {!isLogin && (
-            <>
-                <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    className="w-full bg-black/50 border border-[var(--border-color)] rounded-md p-3 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400"
-                />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Gender</label>
-                    <div className="grid grid-cols-2 gap-2 border border-[var(--border-color)] rounded-lg p-1">
-                        <button type="button" onClick={() => setGender('male')} className={`px-4 py-2 rounded-md text-sm transition-colors ${gender === 'male' ? 'bg-cyan-600 text-white' : 'hover:bg-gray-700'}`}>Male</button>
-                        <button type="button" onClick={() => setGender('female')} className={`px-4 py-2 rounded-md text-sm transition-colors ${gender === 'female' ? 'bg-cyan-600 text-white' : 'hover:bg-gray-700'}`}>Female</button>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {!isLogin && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-cyan-400 mb-2 uppercase tracking-wider">Full Name</label>
+                      <CyberpunkInput
+                        value={name}
+                        onChange={setName}
+                        placeholder="Enter your name"
+                        glowColor="cyan"
+                      />
                     </div>
-                </div>
-            </>
-          )}
+                    
+                    <div>
+                      <label className="block text-xs font-medium text-cyan-400 mb-2 uppercase tracking-wider">Gender</label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setGender('male')}
+                          className={`px-4 py-3 rounded-lg text-sm font-bold uppercase transition-all border-2 ${
+                            gender === 'male'
+                              ? 'bg-cyan-600/30 border-cyan-400 text-cyan-300'
+                              : 'bg-black/20 border-gray-700 text-gray-400 hover:border-cyan-600'
+                          }`}
+                          style={{
+                            boxShadow: gender === 'male' ? '0 0 15px var(--accent-cyan)60' : 'none'
+                          }}
+                        >
+                          👨‍💼 Male
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setGender('female')}
+                          className={`px-4 py-3 rounded-lg text-sm font-bold uppercase transition-all border-2 ${
+                            gender === 'female'
+                              ? 'bg-magenta-600/30 border-magenta-400 text-magenta-300'
+                              : 'bg-black/20 border-gray-700 text-gray-400 hover:border-magenta-600'
+                          }`}
+                          style={{
+                            boxShadow: gender === 'female' ? '0 0 15px var(--accent-magenta)60' : 'none'
+                          }}
+                        >
+                          👩‍💼 Female
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
-            <div className="phone-input-container">
-                <button type="button" onClick={() => setIsCountryModalOpen(true)} className="country-picker-btn">
-                    <span>{selectedCountry.flag}</span>
-                    <span className="text-sm">{selectedCountry.dial_code}</span>
-                </button>
-                 <div className="w-px h-6 bg-[var(--border-color)]"></div>
-                <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                    placeholder={selectedCountry.pattern || '... ... ....'}
-                    className="flex-1 bg-transparent p-3 text-sm focus:outline-none"
-                />
-            </div>
-          </div>
+                <div>
+                  <label className="block text-xs font-medium text-cyan-400 mb-2 uppercase tracking-wider">Phone Number</label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsCountryModalOpen(true)}
+                      className="px-3 py-2 bg-black/50 backdrop-blur-md border-2 rounded-lg flex items-center gap-2 transition-all hover:border-cyan-400"
+                      style={{
+                        borderColor: 'var(--accent-cyan)',
+                        boxShadow: '0 0 10px var(--accent-cyan)40'
+                      }}
+                    >
+                      <span className="text-2xl">{selectedCountry.flag}</span>
+                      <span className="text-sm font-mono text-cyan-400">{selectedCountry.dial_code}</span>
+                    </button>
+                    <CyberpunkInput
+                      value={phone}
+                      onChange={setPhone}
+                      type="tel"
+                      placeholder={selectedCountry.pattern || '... ... ....'}
+                      glowColor="cyan"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">6-Digit PIN</label>
@@ -203,25 +248,33 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onSignup }) => {
             {isLoading ? <><Loader size={20} className="animate-spin mr-2" /> Processing...</> : 'Enter Demo Mode'}
         </button>
 
-      </div>
-
-      {isCountryModalOpen && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50" onClick={() => setIsCountryModalOpen(false)}>
-              <div className="bg-black/80 border border-gray-700 rounded-lg w-full max-w-sm h-[70vh] flex flex-col p-4" onClick={e => e.stopPropagation()}>
-                  <h3 className="text-lg font-bold mb-4 text-center">Select Country</h3>
-                  <div className="flex-1 overflow-y-auto country-modal-list">
-                      {countries.map(country => (
-                          <button key={country.code} onClick={() => { setSelectedCountry(country); setIsCountryModalOpen(false); }} className="w-full flex items-center gap-4 p-2 hover:bg-gray-700 rounded-md text-left">
-                              <span>{country.flag}</span>
-                              <span className="flex-1">{country.name}</span>
-                              <span className="text-gray-400">{country.dial_code}</span>
-                          </button>
-                      ))}
-                  </div>
-              </div>
-          </div>
-      )}
+        </div>
+      </HolographicPanel>
     </div>
+
+    <CyberpunkModal
+      isOpen={isCountryModalOpen}
+      onClose={() => setIsCountryModalOpen(false)}
+      title="Select Country"
+      glowColor="cyan"
+      size="sm"
+    >
+      <div className="space-y-1 max-h-96 overflow-y-auto">
+        {countries.map(country => (
+          <button
+            key={country.code}
+            onClick={() => { setSelectedCountry(country); setIsCountryModalOpen(false); }}
+            className="w-full flex items-center gap-4 p-3 rounded-lg transition-all hover:bg-cyan-600/20 border border-transparent hover:border-cyan-400"
+          >
+            <span className="text-2xl">{country.flag}</span>
+            <span className="flex-1 text-left">{country.name}</span>
+            <span className="text-cyan-400 font-mono">{country.dial_code}</span>
+          </button>
+        ))}
+      </div>
+    </CyberpunkModal>
+  </div>
+</CyberpunkContainer>
   );
 };
 
