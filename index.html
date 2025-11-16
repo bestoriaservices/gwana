@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Webzero Interface</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
@@ -1572,6 +1575,49 @@
     .dashboard-container {
       padding-bottom: 70px; /* Space for footer */
     }
+  }
+
+  /* New Cyberpunk Animations */
+  @keyframes energy-flow {
+    from { background-position: 0 0; }
+    to { background-position: 200px 0; }
+  }
+
+  @keyframes scale-in {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .animate-scale-in { animation: scale-in 0.3s ease-out forwards; }
+
+  @keyframes hexagon-pulse {
+    0%, 100% { box-shadow: 0 0 20px var(--accent-cyan); }
+    50% { box-shadow: 0 0 40px var(--accent-cyan), 0 0 60px var(--accent-cyan); }
+  }
+
+  @keyframes card-hover-lift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-5px); }
+  }
+
+  /* Utility Classes */
+  .cyber-heading {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .cyber-body {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 400;
+  }
+
+  .cyber-mono {
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .clip-hexagon {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   }
 
 </style>
