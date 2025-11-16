@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Mic, BookOpen, Sparkles, Calendar, TrendingUp, Heart, Brain, Target, Loader } from 'lucide-react';
 import { useLiveAPIContext } from '../contexts/LiveAPIContext';
-import { getAssistantResponse } from '../services/geminiService';
 import HolographicPanel from './cyberpunk/HolographicPanel';
 import HolographicText from './cyberpunk/HolographicText';
 import NeonButton from './cyberpunk/NeonButton';
@@ -71,54 +70,23 @@ Keep your responses brief and encouraging. Help them feel heard and validated.`;
     const handleStopRecording = async () => {
         if (!currentEntry) return;
 
-        const finalTranscript = liveTranslatedText;
-        const updatedEntry = { ...currentEntry, transcript: finalTranscript };
+        const finalTranscript = liveTranslatedText || 'No transcript available';
+        const updatedEntry = { 
+            ...currentEntry, 
+            transcript: finalTranscript,
+            analysis: {
+                mood: 'reflective',
+                themes: ['personal reflection'],
+                insights: 'Thank you for sharing your thoughts.',
+                suggestions: ['Continue journaling regularly', 'Take time for self-reflection']
+            }
+        };
         
         endCall();
-        setIsAnalyzing(true);
-
-        try {
-            // Analyze the journal entry
-            const analysisPrompt = `Analyze this journal entry and provide:
-1. Overall mood (one word: happy, anxious, peaceful, stressed, etc.)
-2. 2-3 main themes or topics
-3. A brief insight or observation
-4. 2-3 supportive suggestions or reflections
-
-Journal entry: "${finalTranscript}"
-
-Respond in JSON format:
-{
-  "mood": "...",
-  "themes": ["...", "..."],
-  "insights": "...",
-  "suggestions": ["...", "..."]
-}`;
-
-            const response = await getAssistantResponse(analysisPrompt);
-            const analysisText = response || '{}';
-            
-            try {
-                const analysis = JSON.parse(analysisText);
-                updatedEntry.analysis = analysis;
-            } catch (e) {
-                // If JSON parsing fails, create basic analysis
-                updatedEntry.analysis = {
-                    mood: 'reflective',
-                    themes: ['personal reflection'],
-                    insights: 'Thank you for sharing your thoughts.',
-                    suggestions: ['Continue journaling regularly', 'Take time for self-reflection']
-                };
-            }
-
-            setEntries(prev => [updatedEntry, ...prev]);
-            setCurrentEntry(null);
-            setSelectedEntry(updatedEntry);
-        } catch (error) {
-            console.error('Analysis failed:', error);
-        } finally {
-            setIsAnalyzing(false);
-        }
+        
+        setEntries(prev => [updatedEntry, ...prev]);
+        setCurrentEntry(null);
+        setSelectedEntry(updatedEntry);
     };
 
     const getMoodColor = (mood?: string) => {
@@ -156,7 +124,7 @@ Respond in JSON format:
                             />
                         </div>
 
-                        {!isRecording && !isAnalyzing ? (
+                        {!isRecording ? (
                             <>
                                 {/* Live Transcript */}
                                 {currentEntry && (
@@ -187,7 +155,7 @@ Respond in JSON format:
                                     🎙️ Speak your thoughts and feelings. AI will listen and provide insights.
                                 </p>
                             </>
-                        ) : isRecording ? (
+                        ) : (
                             <>
                                 {/* Recording Display */}
                                 <HolographicPanel glowColor="red" withScanlines={false} className="min-h-[200px]">
@@ -218,13 +186,6 @@ Respond in JSON format:
                                     FINISH & ANALYZE
                                 </NeonButton>
                             </>
-                        ) : (
-                            <div className="flex items-center justify-center gap-3 p-8">
-                                <Loader size={24} className="animate-spin text-purple-400" />
-                                <HolographicText className="text-sm" glowColor="purple">
-                                    Analyzing your journal entry...
-                                </HolographicText>
-                            </div>
                         )}
                     </div>
                 </HolographicPanel>

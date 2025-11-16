@@ -1,11 +1,12 @@
 import React from 'react';
-import TalkingEmoji from './TalkingEmoji';
+import AssistantEmoji from './AssistantEmoji';
 import { useLiveAPIContext } from '../contexts/LiveAPIContext';
 import type { View, AiMode, CallState, Persona } from '@/src/lib/types';
 import { audioManager, formatTime } from '@/src/lib/utils';
 import { Phone, PhoneOff, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { AI_MODES } from '@/src/lib/constants';
 import NewsDesk from './NewsDesk';
+import PersonaSwitcher from './PersonaSwitcher';
 
 interface AgentPresenceProps {
     view: View;
@@ -66,13 +67,16 @@ const AgentPresence: React.FC<AgentPresenceProps> = ({
     
     return (
          <div className={`relative z-10 flex flex-col items-center transition-all duration-700 ease-in-out bg-black/10 w-full py-2 justify-center flex-shrink-0`}>
+            <div className="flex items-center gap-4 mb-2">
+                <PersonaSwitcher currentPersona={persona} onSwitch={setPersona} />
+            </div>
             <div className="dual-agent-presence-container pointer-events-auto">
                 <div 
                     className={`agent-pod agent-zero-pod ${isSelectable && setPersona ? 'selectable' : ''} ${isZeroActive ? 'active' : ''} ${isZeroSpeaking ? 'speaking' : ''}`}
                     onClick={() => handleSelect('Agent Zero')}
                     title="Select Agent Zero"
                 >
-                    <TalkingEmoji persona="Agent Zero" activePersona={speakingPersona} size={isDesktop ? 100 : 75} />
+                    <AssistantEmoji persona="Agent Zero" size={isDesktop ? 'xl' : 'lg'} isAnimated={isZeroSpeaking} />
                     {!hideControls && <h2 className="agent-zero-name text-sm sm:text-lg">Agent Zero</h2>}
                 </div>
                 
@@ -132,13 +136,13 @@ const AgentPresence: React.FC<AgentPresenceProps> = ({
                     )
                 )}
 
-
+                
                 <div 
                     className={`agent-pod agent-zara-pod ${isSelectable && setPersona ? 'selectable' : ''} ${isZaraActive ? 'active' : ''} ${isZaraSpeaking ? 'speaking' : ''}`}
                     onClick={() => handleSelect('Agent Zara')}
                     title="Select Agent Zara"
                 >
-                    <TalkingEmoji persona="Agent Zara" activePersona={speakingPersona} size={isDesktop ? 100 : 75} />
+                    <AssistantEmoji persona="Agent Zara" size={isDesktop ? 'xl' : 'lg'} isAnimated={isZaraSpeaking} />
                     {!hideControls && <h2 className="agent-zara-name text-sm sm:text-lg">Agent Zara</h2>}
                 </div>
             </div>
