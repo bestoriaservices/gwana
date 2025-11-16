@@ -59,19 +59,19 @@ const TranslatorConsole: React.FC<TranslatorConsoleProps> = ({ messages }) => {
     return (
         <div className="broadcast-console-container">
             <div className="broadcast-console" style={{ maxWidth: '600px', gap: '1.5rem' }}>
-                <HolographicPanel glowColor="magenta" withGrid withScanlines withCorners>
+                <HolographicPanel glowColor="cyan" withGrid withScanlines withCorners>
                     <div className="p-6 space-y-4">
-                        <HolographicText className="text-center text-sm font-bold tracking-widest flex items-center justify-center gap-2" glowColor="magenta" flickerEffect>
+                        <HolographicText className="text-center text-sm font-bold tracking-widest flex items-center justify-center gap-2" glowColor="cyan" flickerEffect>
                             <Languages size={20} className="animate-pulse" />
                             UNIVERSAL TRANSLATOR
                             <Radio size={16} className="animate-pulse" />
                         </HolographicText>
 
                         {/* Frequency Visualizer */}
-                        <div className="relative overflow-hidden rounded-lg border-2" style={{ borderColor: 'var(--accent-magenta)' }}>
+                        <div className="relative overflow-hidden rounded-lg border-2" style={{ borderColor: 'var(--accent-cyan)' }}>
                             <FrequencyVisualizer 
                                 isActive={isAISpeaking || isUserSpeaking} 
-                                color="magenta" 
+                                color="cyan" 
                                 height={80}
                             />
                         </div>
@@ -91,7 +91,7 @@ const TranslatorConsole: React.FC<TranslatorConsoleProps> = ({ messages }) => {
 
                         {/* Language Selector */}
                         <div>
-                            <label className="text-xs font-mono mb-2 block flex items-center gap-2" style={{ color: 'var(--accent-magenta)' }}>
+                            <label className="text-xs font-mono mb-2 block flex items-center gap-2" style={{ color: 'var(--accent-cyan)' }}>
                                 <Languages size={14} />
                                 TARGET LANGUAGE
                             </label>
@@ -103,9 +103,9 @@ const TranslatorConsole: React.FC<TranslatorConsoleProps> = ({ messages }) => {
                                     className="w-full bg-black/70 border-2 rounded-lg px-4 py-3 text-sm font-mono backdrop-blur-sm
                                              focus:outline-none transition-all disabled:opacity-30"
                                     style={{
-                                        borderColor: 'var(--accent-magenta)',
+                                        borderColor: 'var(--accent-cyan)',
                                         color: 'var(--accent-cyan)',
-                                        boxShadow: '0 0 10px rgba(255, 0, 255, 0.3), inset 0 0 10px rgba(255, 0, 255, 0.1)'
+                                        boxShadow: '0 0 10px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1)'
                                     }}
                                 >
                                     {SUPPORTED_LANGUAGES.map(lang => (
