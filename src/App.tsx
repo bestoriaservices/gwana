@@ -17,7 +17,8 @@ import ProactiveActionModal from './components/ProactiveActionModal';
 import AgentPresence from './components/AgentPresence';
 import SharedContentViewer from './components/SharedContentViewer';
 import MeetingSetupModal from './components/MeetingSetupModal';
-import StudyHubScreen, { ProgressTracker } from './components/StudyHubScreen';
+import { ProgressTracker } from './components/StudyHubScreen';
+import PersonaSwitcher from './components/PersonaSwitcher';
 import CalendarScreen, { EventFormModal } from './components/CalendarScreen';
 import WorkflowEditorModal from './components/WorkflowEditorModal';
 import SubscriptionModal from './components/SubscriptionModal';
@@ -40,7 +41,7 @@ import AppDrawer from './components/AppDrawer';
 import Taskbar from './components/Taskbar';
 import MobileFooter from './components/MobileFooter';
 import DesktopAssistant from './components/DesktopAssistant';
-import Window from './components/Window'; // Import the new Window component
+import Window from './components/Window';
 
 declare const pdfjsLib: any;
 declare const mammoth: any;
@@ -300,8 +301,6 @@ const KwararruAppUI: React.FC<any> = (props) => {
                 return <ChatUI {...chatUIProps} />;
             case 'settings':
                 return <SettingsScreen {...{currentUser, logout, persona, settings, callHistory, updateSettings, clearChat, exportChat, setView, setShowStatsModal, setShowKeyboardShortcuts, togglePersona: () => handleSetPersona(persona === 'Agent Zero' ? 'Agent Zara' : 'Agent Zero'), isDesktop, onBack: () => setView('dashboard'), workflows, onOpenWorkflowEditor: handleOpenWorkflowEditor, onDeleteWorkflow: handleDeleteWorkflow, onRunWorkflow: handleRunWorkflow, onToggleWorkflow: handleToggleWorkflow, setShowSubscriptionModal}} />;
-            case 'studyHub':
-                return <StudyHubScreen {...{items: studyHubItems, onRemove: removeStudyHubItem, setView, studyProgress}} />;
             case 'calendar':
 // FIX: The shorthand property 'setIsFormOpen' was used without being in scope. Corrected to explicitly pass 'setIsCalendarFormOpen' as the 'setIsFormOpen' prop.
                 return <CalendarScreen {...{events: calendarEvents, onAddEvent: handleAddCalendarEvent, onDeleteEvent: handleDeleteCalendarEvent, setView, setIsFormOpen: setIsCalendarFormOpen}} />;

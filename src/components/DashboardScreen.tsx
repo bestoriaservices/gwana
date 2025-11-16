@@ -113,21 +113,6 @@ const DashboardScreen: React.FC<{
                     onClick={() => setView('calendar')}
                 />
                 <DesktopShortcut 
-                    label="Study Hub"
-                    icon={BookOpen}
-                    onClick={() => setView('studyHub')}
-                />
-                <DesktopShortcut 
-                    label="AI Writer"
-                    icon={Sparkles}
-                    onClick={() => setView('aiWriter')}
-                />
-                <DesktopShortcut 
-                    label="Code Helper"
-                    icon={Code}
-                    onClick={() => setView('codeHelper')}
-                />
-                <DesktopShortcut 
                     label="Voice Journal"
                     icon={BookOpen}
                     onClick={() => setView('voiceJournal')}
