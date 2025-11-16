@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Phone, Video, MessageCircle, Search, ArrowLeft, User, Mail, MapPin, Briefcase, GraduationCap, Heart } from 'lucide-react';
 import { contacts, type PersonContact } from '../data/people';
+import { useLiveAPIContext } from '../contexts/LiveAPIContext';
+import { generateCallSystemInstruction, formatCallContext } from '../services/call/callService';
 
 interface CallAppProps {
   onClose?: () => void;
@@ -9,32 +11,78 @@ interface CallAppProps {
 const CallApp: React.FC<CallAppProps> = ({ onClose }) => {
   const [selectedContact, setSelectedContact] = useState<PersonContact | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [inCall, setInCall] = useState(false);
+  const { 
+    callState, 
+    startCall, 
+    endCall,
+    isAISpeaking,
+    isUserSpeaking,
+    persona,
+    isCameraOn,
+    toggleCamera
+  } = useLiveAPIContext();
 
   const filteredContacts = contacts.filter(contact => 
     contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     contact.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleCall = (type: 'voice' | 'video') => {
-    setInCall(true);
-    // Simulate call duration then end
-    setTimeout(() => setInCall(false), 5000);
+  const handleCall = (type: 'voice' | 'video', contact: PersonContact) => {
+    if (!contact) return;
+    
+    const systemInstruction = generateCallSystemInstruction(contact);
+    const initialText = `Hi, this is ${contact.name}. How can I help you today?`;
+    
+    // Start the call with the AI persona
+    startCall(undefined, initialText, systemInstruction, formatCallContext(contact));
+    
+    // Enable camera for video calls
+    if (type === 'video' && !isCameraOn) {
+      toggleCamera();
+    }
   };
 
-  if (inCall && selectedContact) {
+  const handleEndCall = () => {
+    endCall('idle');
+  };
+
+  const isInCall = callState === 'connected' || callState === 'connecting';
+
+  if (isInCall && selectedContact) {
+    const statusText = callState === 'connecting' ? 'Connecting...' : 
+                       isAISpeaking ? 'Speaking...' : 
+                       isUserSpeaking ? 'Listening...' : 
+                       'Connected';
+    
     return (
       <div className="h-full flex flex-col items-center justify-center bg-gradient-to-br from-[var(--bg-primary)] to-[var(--bg-secondary)] p-6">
-        <div className="text-6xl mb-4 animate-pulse">{selectedContact.avatar}</div>
+        <div className={`text-6xl mb-4 ${isAISpeaking ? 'animate-pulse' : ''}`}>
+          {selectedContact.avatar}
+        </div>
         <h2 className="text-2xl font-bold text-white mb-2">{selectedContact.name}</h2>
-        <p className="text-gray-400 mb-6">Connecting...</p>
+        <p className="text-[var(--accent-cyan)] mb-2">{selectedContact.title}</p>
+        <p className="text-gray-400 mb-6">{statusText}</p>
+        
+        {/* Call duration could be added here */}
+        
         <div className="flex gap-4">
           <button 
-            onClick={() => setInCall(false)}
-            className="px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-full font-medium transition-colors"
+            onClick={handleEndCall}
+            className="px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-full font-medium transition-colors flex items-center gap-2"
           >
+            <Phone size={20} />
             End Call
           </button>
+          
+          {isCameraOn && (
+            <button 
+              onClick={toggleCamera}
+              className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-full font-medium transition-colors flex items-center gap-2"
+            >
+              <Video size={20} />
+              Turn Off Camera
+            </button>
+          )}
         </div>
       </div>
     );
@@ -63,7 +111,7 @@ const CallApp: React.FC<CallAppProps> = ({ onClose }) => {
           {/* Quick Actions */}
           <div className="flex gap-4 justify-center">
             <button 
-              onClick={() => handleCall('voice')}
+              onClick={() => handleCall('voice', selectedContact)}
               className="flex flex-col items-center gap-2 p-4 bg-[var(--bg-secondary)] hover:bg-white/5 rounded-xl transition-colors border border-[var(--border-color)]"
             >
               <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
@@ -73,7 +121,7 @@ const CallApp: React.FC<CallAppProps> = ({ onClose }) => {
             </button>
             
             <button 
-              onClick={() => handleCall('video')}
+              onClick={() => handleCall('video', selectedContact)}
               className="flex flex-col items-center gap-2 p-4 bg-[var(--bg-secondary)] hover:bg-white/5 rounded-xl transition-colors border border-[var(--border-color)]"
             >
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
