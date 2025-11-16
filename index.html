@@ -43,8 +43,19 @@
 
   body {
     color: var(--text-primary);
-    font-family: 'Orbitron', sans-serif; /* A futuristic font, though we'll rely on system sans-serif as a fallback */
-    overflow: hidden; /* Prevent body scroll */
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+  }
+  
+  /* Responsive container - no scrollbars */
+  * {
+    box-sizing: border-box;
+  }
+  
+  #root {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
   }
   
   .dark {
@@ -311,10 +322,10 @@
   .logo-accent-one { stroke: var(--accent-magenta); }
 
   .header-title {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
     font-size: 1.25rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--text-primary);
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.3), 0 0 10px var(--accent-cyan);
@@ -1003,12 +1014,13 @@
     flex-grow: 1;
   }
   .quiz-welcome-header {
-    font-family: 'Orbitron', monospace;
+    font-family: 'Rajdhani', sans-serif;
     color: var(--accent-cyan);
     text-shadow: 0 0 8px var(--accent-cyan);
     font-size: 1.25rem;
     display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
+    font-weight: 600;
   }
   .quiz-header {
     display: flex; justify-content: space-between; align-items: center;
@@ -1251,7 +1263,7 @@
   .dashboard-clock-widget .date {
     font-size: 1rem;
     color: var(--text-secondary);
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
   }
   .dashboard-panels-container {
     display: flex;
@@ -1283,7 +1295,62 @@
     font-size: 0.9rem;
   }
 
-  /* --- DESKTOP OS UI --- */
+  /* --- RESPONSIVE & MOBILE-FIRST LAYOUT --- */
+  @media (max-width: 768px) {
+    /* Mobile: No scroll, content fits screen */
+    .quiz-console-container,
+    .broadcast-console-container,
+    .mobile-app-content {
+      height: calc(100vh - 140px); /* Account for header/footer */
+      max-height: calc(100vh - 140px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .quiz-console,
+    .broadcast-console {
+      height: 100%;
+      max-height: 100%;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .quiz-question-display {
+      min-height: auto;
+      padding: 1rem;
+      font-size: 0.95rem;
+    }
+    
+    .quiz-options-grid {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    
+    .quiz-option-btn {
+      padding: 0.75rem;
+      font-size: 0.9rem;
+    }
+    
+    .dashboard-clock-widget .time {
+      font-size: 2.5rem;
+    }
+    
+    .dashboard-panel {
+      flex: 1 1 100%;
+      min-width: 0;
+      padding: 0.75rem;
+    }
+    
+    /* App names font fix */
+    .mobile-app-header h1,
+    .app-drawer h1,
+    .desktop-shortcut span,
+    .window-title {
+      font-family: 'Rajdhani', sans-serif !important;
+      font-weight: 600;
+    }
+  }
   .desktop-main-content {
     flex: 1;
     overflow-y: auto;
