@@ -2,31 +2,12 @@ import { GoogleGenAI, Modality, Blob as GenAI_Blob, GenerateContentResponse, Liv
 import type { Settings, Message, AiMode, NewsContent, NewsArticle, JobContent, PracticeSession, StudyGuide, View, Personality, FontSize, Theme, AiSuggestion, MemoryFragment, ToolCallInfo, UserEmotion, ProactiveSuggestion, WhiteboardElement, ProactiveAction, MeetingReportContent, LiveCallbacks, ResearchDossierContent, InteractiveChartContent, ItineraryContent, FlashcardContent, SWOTContent, QuizContent, LearningPathContent, Persona, CalendarEvent, ProactiveCalendarSuggestionContent, RecipeContent, BudgetPlannerContent, PersonProfileContent, PlaceProfileContent, DebateContent, LiveSession } from '@/src/lib/types';
 import { encode, getRelevantMemoryFragments, saveMemoryFragment } from '@/src/lib/utils';
 import { AI_MODES, AI_MODE_GREETINGS, VOICE_NAMES } from '@/src/lib/constants';
+import { getAI, initializeAI, OFFLINE_RESPONSE_TEXT, isAIAvailable } from './core/geminiCore';
 
-const OFFLINE_RESPONSE_TEXT = "AI features are disabled. An API key is required to use this feature.";
+// Re-export for backward compatibility
+export { initializeAI, isAIAvailable };
 
-let ai: GoogleGenAI | null = null;
-
-// Check localStorage first, then environment variable
-const getApiKey = () => {
-  const storedKey = localStorage.getItem('gemini_api_key');
-  if (storedKey) return storedKey;
-  return process.env.API_KEY;
-};
-
-// Initialize AI instance
-const initializeAI = () => {
-  const apiKey = getApiKey();
-  if (apiKey) {
-    ai = new GoogleGenAI({ apiKey });
-    return true;
-  }
-  return false;
-};
-
-// Initialize on load
-initializeAI();
-
+// Re-export GeminiServiceResponse type for other services
 export interface GeminiServiceResponse {
     text: string | null;
     image: { data: string; mimeType: string; } | null;
@@ -362,6 +343,7 @@ const scheduleEventFunctionDeclaration: FunctionDeclaration = {
 };
 
 export const generateSpeech = async (text: string, voiceName: string): Promise<string | null> => {
+  const ai = getAI();
   if (!ai) return null;
   try {
     const response = await ai.models.generateContent({
@@ -396,13 +378,12 @@ export const generateTextAndImageContent = async (
     fullMeetingTranscript?: { polished: string; english: string; },
     dataFileContent?: string,
 ): Promise<GeminiServiceResponse> => {
+    const ai = getAI();
     if (!ai) {
         return { text: OFFLINE_RESPONSE_TEXT, image: null, news: null };
     }
 
     try {
-        // This is a simplified implementation. A full implementation would have complex
-        // logic to build prompts, system instructions, and schemas for each AI mode.
         const model = usePro ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
         let contents: any = userMessage.text || '';
         if (userMessage.image) {
@@ -431,6 +412,7 @@ export const generateCalendarSuggestion = async (event: CalendarEvent): Promise<
         event,
     };
 
+    const ai = getAI();
     if (!ai) return defaultSuggestion;
 
     try {
@@ -446,6 +428,7 @@ export const generateCalendarSuggestion = async (event: CalendarEvent): Promise<
 };
 
 export const generateNewsScript = async (prompt: string): Promise<{ persona: Persona; text: string }[] | null> => {
+    const ai = getAI();
     if (!ai) return null;
     try {
         const response = await ai.models.generateContent({
@@ -478,6 +461,7 @@ export const generateNewsScript = async (prompt: string): Promise<{ persona: Per
 };
 
 export const getLatestHeadlines = async (topic: string = 'world news'): Promise<string[] | null> => {
+    const ai = getAI();
     if (!ai) return null;
     try {
         const response = await ai.models.generateContent({
@@ -527,6 +511,7 @@ export const generateVideo = async (prompt: string, image?: { data: string, mime
 };
 
 export const editImage = async (prompt: string, image: { data: string; mimeType: string }): Promise<GeminiServiceResponse> => {
+    const ai = getAI();
     if (!ai) return { text: OFFLINE_RESPONSE_TEXT, image: null, news: null };
 
     try {
@@ -575,6 +560,7 @@ export const connectToLive = async (
     useProactiveTools?: boolean,
     chatContext?: string
 ): Promise<LiveSession> => {
+    const ai = getAI();
     if (!ai) throw new Error("AI service not configured.");
     
     const sessionPromise = ai.live.connect({
@@ -607,6 +593,7 @@ export const createAudioBlob = (data: Float32Array): GenAI_Blob => {
 };
 
 export const detectSentiment = async (text: string): Promise<'positive' | 'negative' | 'neutral' | null> => {
+    const ai = getAI();
     if (!ai || !text.trim()) return null;
     try {
         const response = await ai.models.generateContent({
@@ -625,6 +612,7 @@ export const detectSentiment = async (text: string): Promise<'positive' | 'negat
 };
 
 export const polishTranscript = async (transcript: string, speakerNames: Record<string, string>): Promise<string> => {
+    const ai = getAI();
     if (!ai || !transcript.trim()) return transcript;
     try {
         let speakerMapping = "The speakers are identified as follows:\n";
@@ -646,6 +634,7 @@ export const polishTranscript = async (transcript: string, speakerNames: Record<
 };
 
 export const generatePersonImage = async (prompt: string): Promise<{ data: string; mimeType: string } | null> => {
+    const ai = getAI();
     if (!ai) return null;
     try {
         const response = await ai.models.generateImages({
@@ -669,6 +658,7 @@ export const generatePersonImage = async (prompt: string): Promise<{ data: strin
 };
 
 export const getAssistantResponse = async (prompt: string): Promise<string> => {
+    const ai = getAI();
     if (!ai) {
         return "The AI assistant is currently offline.";
     }
