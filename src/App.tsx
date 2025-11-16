@@ -8,7 +8,7 @@ import ApiKeyWarning from './components/ApiKeyWarning';
 import { ChatUI } from './components/ChatUI';
 import SettingsScreen from './components/SettingsScreen';
 import DeepSpaceBackground from './components/DeepSpaceBackground';
-import { Keyboard, BarChart3, Globe, X, Loader, BookOpen, Calendar, ArrowLeft, Plus } from 'lucide-react';
+import { Keyboard, BarChart3, Globe, X, Loader, BookOpen, Calendar, ArrowLeft, Plus, Phone as PhoneIcon } from 'lucide-react';
 import { LiveAPIProvider, useLiveAPIContext } from './contexts/LiveAPIContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import StatsModal from './components/StatsModal';
@@ -30,6 +30,7 @@ import LiveRadioPlayer from './components/LiveRadioPlayer';
 import { QuizShowUI } from './components/QuizConsole';
 import DebateStageUI from './components/DebateStageUI';
 import TranslatorConsole from './components/TranslatorConsole';
+import CallApp from './components/CallApp';
 import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
 import AIWritingAssistant from './components/AIWritingAssistant';
 import CodeHelper from './components/CodeHelper';
@@ -312,6 +313,8 @@ const KwararruAppUI: React.FC<any> = (props) => {
                 return <CodeHelper />;
             case 'voiceJournal':
                 return <VoiceJournal />;
+            case 'callApp':
+                return <CallApp />;
             case 'dashboard':
                  return <DashboardScreen isDesktop={isDesktop} setView={setView} setAiMode={handleSetAiMode} persona={persona} setPersona={handleSetPersona} />
             default:

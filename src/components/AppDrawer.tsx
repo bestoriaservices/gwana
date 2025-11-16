@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Calculator, Calendar, Sparkles, Code, BookOpen } from 'lucide-react';
+import { ArrowLeft, Calculator, Calendar, Sparkles, Code, BookOpen, Phone } from 'lucide-react';
 import { AI_MODES } from '../lib/constants';
 import type { View, AiMode } from '../lib/types';
 
@@ -43,6 +43,11 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ setView, setAiMode }) => {
             label: 'Voice Journal',
             icon: BookOpen,
             onClick: () => setView('voiceJournal')
+        },
+        {
+            label: 'Call',
+            icon: Phone,
+            onClick: () => setView('callApp')
         },
         {
             label: 'Calculator',

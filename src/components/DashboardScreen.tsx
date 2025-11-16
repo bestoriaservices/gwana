@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sun, Calendar as CalendarIcon, Calculator, BookOpen } from 'lucide-react';
+import { Sun, Calendar as CalendarIcon, Calculator, BookOpen, Sparkles, Code, Phone } from 'lucide-react';
 import { AI_MODES } from '../lib/constants';
 import type { AiMode, View, Persona } from '../lib/types';
 import AgentPresence from './AgentPresence';
@@ -116,6 +116,26 @@ const DashboardScreen: React.FC<{
                     label="Study Hub"
                     icon={BookOpen}
                     onClick={() => setView('studyHub')}
+                />
+                <DesktopShortcut 
+                    label="AI Writer"
+                    icon={Sparkles}
+                    onClick={() => setView('aiWriter')}
+                />
+                <DesktopShortcut 
+                    label="Code Helper"
+                    icon={Code}
+                    onClick={() => setView('codeHelper')}
+                />
+                <DesktopShortcut 
+                    label="Voice Journal"
+                    icon={BookOpen}
+                    onClick={() => setView('voiceJournal')}
+                />
+                <DesktopShortcut 
+                    label="Call"
+                    icon={Phone}
+                    onClick={() => setView('callApp')}
                 />
                  <DesktopShortcut 
                     label="Calculator"
